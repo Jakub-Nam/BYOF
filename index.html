@@ -11,23 +11,13 @@
   <main>
     <div class="container-types">
       <p>Typy</p>
-      <ul>
-        <li>Alkohole</li>
-        <li>Mięso</li>
-        <li>Miody</li>
-        <li>Nabiał</li>
-        <li>Owoce</li>
-        <li>Pozostałe</li>
-        <li>Ryby</li>
-        <li>Warzywa</li>
-        <li>Wędliny</li>
-        <li>Zboża</li>
+      <ul id="type-list">
       </ul>
 
       <label class="switch">
         <input type="checkbox">
         <span class="slider round">
-          <div class="icon" style="background-image: url('images/leaf-icon.png');"></div>
+          <!-- <div class="icon" style="background-image: url('images/leaf-icon.png');"></div> -->
         </span>
         <span>Vege only</span>
       </label>
@@ -35,52 +25,19 @@
     </div>
     <section class="container-categories">
       <p>Kategorie</p>
-      <div class="categories__items">
-        <figure>
-          <!-- <img src="sciezka/do/obrazka.jpg" alt="Obrazek z jedzeniem"> -->
-          <figcaption>Mieso wolowe</figcaption>
-        </figure>
-        <figure>
-          <!-- <img src="sciezka/do/obrazka.jpg" alt="Obrazek z jedzeniem"> -->
-          <figcaption>Mieso wieprzowe</figcaption>
-        </figure>
-        <figure>
-          <!-- <img src="sciezka/do/obrazka.jpg" alt="Obrazek z jedzeniem"> -->
-          <figcaption>Brzoskwienie</figcaption>
-        </figure>
-        <figure>
-          <!-- <img src="sciezka/do/obrazka.jpg" alt="Obrazek z jedzeniem"> -->
-          <figcaption>Botwinka</figcaption>
-        </figure>
-        <figure>
-          <!-- <img src="sciezka/do/obrazka.jpg" alt="Obrazek z jedzeniem"> -->
-          <figcaption>Jabłka</figcaption>
-        </figure>
-        <figure>
-          <!-- <img src="sciezka/do/obrazka.jpg" alt="Obrazek z jedzeniem"> -->
-          <figcaption>Brokuły</figcaption>
-        </figure>
-        <figure>
-          <!-- <img src="sciezka/do/obrazka.jpg" alt="Obrazek z jedzeniem"> -->
-          <figcaption>Jabłka</figcaption>
-        </figure>
-        <figure>
-          <!-- <img src="sciezka/do/obrazka.jpg" alt="Obrazek z jedzeniem"> -->
-          <figcaption>Brokuły</figcaption>
-        </figure>
-        <figure>
-          <!-- <img src="sciezka/do/obrazka.jpg" alt="Obrazek z jedzeniem"> -->
-          <figcaption>Jabłka</figcaption>
-        </figure>
-        <figure>
-          <!-- <img src="sciezka/do/obrazka.jpg" alt="Obrazek z jedzeniem"> -->
-          <figcaption>Brokuły</figcaption>
-        </figure>
-      </div>
+      <ul class="categories__items" id="products-list">
+        <!-- <li>
+          <figure>
+           <img src="sciezka/do/obrazka.jpg" alt="Obrazek z jedzeniem"> 
+            <figcaption>Mieso wolowe</figcaption>
+          </figure>
+        </li> -->
+      </ul>
     </section>
   </main>
   <div id="app"></div>
   <script type="module" src="/main.js"></script>
+  <script type="module" src="/scripts/contactDb.js"></script>
 </body>
 
 </html>
