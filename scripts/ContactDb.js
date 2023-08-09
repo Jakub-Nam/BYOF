@@ -1,76 +1,10 @@
-const apiTypesUrl = "https://api-eko-bazarek.azurewebsites.net/api/products/types";
+const productsList = document.getElementById('products-list');
 const typeList = document.getElementById('type-list');
-const productsList = document.getElementById('products-list')
-
-async function fetchTypes() {
-    try {
-        const response = await fetch(apiTypesUrl);
-
-        if (!response.ok) {
-            throw new Error(`Zapytanie http niepowiodło się: ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        data.forEach(type => {
-            const li = document.createElement('li');
-            li.textContent = type.name;
-            li.dataset.type = type.id;
-            typeList.appendChild(li);
-        });
-    } catch (error) {
-        console.error("Blad podczas zapytania HTTP:", error);
-    }
-}
-
-fetchTypes();
-
-const apiProductsUrl = "https://api-eko-bazarek.azurewebsites.net/api/products/categories";
-
-async function fetchProducts() {
-    try {
-        const response = await fetch(apiProductsUrl);
-
-        if (!response.ok) {
-            throw new Error(`Request failed with status: ${response.status}`);
-        }
-
-        const data = await response.json();
-
-        // data.forEach(food => {
-        //     const liTemplate = `<li><figure><img src="${food.iconUrl}"><figcaption>${food.name}</figcaption></figure></li>`;
-        //     const parser = new DOMParser();
-        //     const liElement = parser.parseFromString(liTemplate, 'text/html').body.firstChild;
-        //     productsList.appendChild(liElement);
-        // });
-        for (let i = 0; i < 20; i++) {
-            console.log(data)
-            const liTemplate = `<li><figure><img src="${data[i].iconUrl}"><figcaption>${data[i].name}</figcaption></figure></li>`;
-            const parser = new DOMParser();
-            const liElement = parser.parseFromString(liTemplate, 'text/html').body.firstChild;
-            productsList.appendChild(liElement);
-        }
-
-        console.log("Fetched data:", data);
-
-    } catch (error) {
-        console.error("Error fetching data:", error);
-    }
-}
-
-fetchProducts();
+const productsUrl = "https://api-eko-bazarek.azurewebsites.net/api/products/categories";
+const typesUrl = "https://api-eko-bazarek.azurewebsites.net/api/products/types";
 
 
-typeList.addEventListener('click', (event) => {
-    if (event.target.tagName === 'LI') {
-        const selectedType = event.target.dataset.type;
-        const url = `https://api-eko-bazarek.azurewebsites.net/api/products/categories?type=${selectedType}`;
-
-        getProperFood(url);
-    }
-});
-
-async function getProperFood(url) {
+async function fetchData(url) {
     try {
         const response = await fetch(url);
 
@@ -79,15 +13,99 @@ async function getProperFood(url) {
         }
 
         const data = await response.json();
-        productsList.innerHTML = '';
+        return data;
 
-        for (let i = 0; i < data.length; i++) {
-            const liTemplate = `<li><figure><img src="${data[i].iconUrl}"><figcaption>${data[i].name}</figcaption></figure></li>`;
-            const parser = new DOMParser();
-            const liElement = parser.parseFromString(liTemplate, 'text/html').body.firstChild;
-            productsList.appendChild(liElement);
-        };
     } catch (error) {
         console.error("Blad podczas zapytania HTTP:", error);
     }
+}
+
+fetchData(typesUrl)
+    .then(data => {
+        addTypes(sortAlphabetically(data));
+    })
+    .catch(error => {
+        console.log(error);
+    })
+
+fetchData(productsUrl)
+    .then(data => {
+        addProducts(sortAlphabetically(data));
+    })
+    .catch(error => {
+        console.log(error);
+    })
+
+typeList.addEventListener('click', (event) => {
+
+    const isClicked = event.target.classList.contains('clicked');
+
+    if (isClicked) {
+        makeEmptyProductsList();
+        fetchData(productsUrl)
+            .then(data => {
+                addProducts(sortAlphabetically(data));
+            })
+            .catch(error => {
+                console.log(error);
+            })
+        removeClickedClass()
+    } else {
+        removeClickedClass()
+        if (event.target.tagName === 'LI') {
+            const selectedType = event.target.dataset.type;
+            const url = `https://api-eko-bazarek.azurewebsites.net/api/products/categories?type=${selectedType}`;
+            event.target.classList.add('clicked');
+
+            fetchData(url)
+                .then(data => {
+                    const sortedFood = sortAlphabetically(data);
+                   addProducts(sortedFood);
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+        }
+    }
+});
+
+function removeClickedClass() {
+    const listElements = document.querySelectorAll('.types__type-li');
+
+    listElements.forEach((ele) => {
+        ele.classList.remove("clicked");
+    });
+}
+
+
+function addTypes(types) {
+    types.forEach(type => {
+        const li = document.createElement('li');
+        li.classList.add('types__type-li');
+        li.textContent = type.name;
+        li.dataset.type = type.id;
+        typeList.appendChild(li);
+    });
+}
+
+function addProducts(products) {
+    makeEmptyProductsList()
+    products.forEach(food => {
+        const liTemplate = `<li><figure><img src="${food.iconUrl}"><figcaption>${food.name}</figcaption></figure></li>`;
+        const parser = new DOMParser();
+        const liElement = parser.parseFromString(liTemplate, 'text/html').body.firstChild;
+        productsList.appendChild(liElement);
+    });
+}
+
+function sortAlphabetically(data) {
+    const collator = new Intl.Collator('pl', {
+        sensitivity: 'base'
+    });
+
+    return data.sort((a, b) => collator.compare(a.name, b.name));
+}
+
+function makeEmptyProductsList(){
+    productsList.innerHTML = '';
 }

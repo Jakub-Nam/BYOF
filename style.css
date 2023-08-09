@@ -1,10 +1,10 @@
 * {
   padding: 0px;
 }
+
 html {
   background-color: #f6f5f1;
   font-family: sans-serif;
-  /* font-size: 14px; */
   font-size: 0.9rem;
 }
 
@@ -16,7 +16,6 @@ body {
 main {
   display: flex;
   height: 100%;
-  /* width: 90%; */
   margin: 3rem 0;
 }
 
@@ -26,14 +25,6 @@ div > p {
   margin-bottom: 1.2rem;
 }
 
-/* .container-types { */
-  /* margin-left: 5rem; */
-  /* flex-direction: column; */
-  /* flex-basis: 1; */
-/* } */
-
-
-
 ul {
   list-style-type: none;
 
@@ -42,10 +33,9 @@ ul {
 .container-types ul {
   display: flex;
   flex-direction: column;
-   /* flex-basis: 160px; */
 }
 
-.container-types ul > li {
+.types__type-li {
   background-color: #ffffff;
   border-radius: 8px;
   border: none;
@@ -55,9 +45,15 @@ ul {
   min-width: 144px; 
   flex: 1; 
 }
-/* .container-types ul > li:hover {
-  background-color: red;
-} */
+.container-types ul > li:hover {
+  background-color: #def2dd;
+  cursor: pointer;
+}
+
+.clicked {
+  background-color: green;
+  color: #eeeeee;
+}
 
 .container-categories {
   margin-left: 1rem;
@@ -80,8 +76,6 @@ ul > li > figure {
   background-color: #ffffff;
 }
 ul > li > figure > img {
-  /* height: 60%;
-  width: 60%; */
   height: 64px;
   width: 64px;
 }
