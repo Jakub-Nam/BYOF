@@ -1,10 +1,16 @@
-import { vegeProducts } from './shared/const.js';
-import { fetchData } from './contactDb.js';
-import { typesUrl, productsUrl } from './shared/const.js';
-
-const productsList = document.getElementById('products-list');
-const typeList = document.getElementById('type-list');
-const toggleCheckbox = document.getElementById('toggleCheckbox');
+import {
+    vegeProducts
+} from './shared/const.js';
+import {
+    fetchData
+} from './contactDb.js';
+import {
+    typesUrl,
+    productsUrl,
+    productsList,
+    typeList,
+    toggleCheckbox
+} from './shared/const.js';
 
 setTypes();
 setProducts();
@@ -27,6 +33,7 @@ typeList.addEventListener('click', (event) => {
             fetchData(url)
                 .then(data => {
                     const sortedFood = sortAlphabetically(data);
+                    makeEmptyList(productsList)
                     addProducts(sortedFood);
                 })
                 .catch(error => {
@@ -39,7 +46,7 @@ typeList.addEventListener('click', (event) => {
 toggleCheckbox.addEventListener('change', function () {
     if (this.checked) {
         makeEmptyList(typeList);
-        getVegeTypes();
+        setVegeTypes();
     } else {
         makeEmptyList(typeList);
         setTypes();
@@ -60,6 +67,7 @@ function setTypes() {
 function setProducts() {
     fetchData(productsUrl)
         .then(data => {
+            makeEmptyList(productsList);
             addProducts(sortAlphabetically(data));
         })
         .catch(error => {
@@ -86,7 +94,6 @@ function addTypes(types) {
 }
 
 function addProducts(products) {
-    makeEmptyList(productsList)
     products.forEach(food => {
         const liTemplate = `<li><figure><img src="${food.iconUrl}"><figcaption>${food.name}</figcaption></figure></li>`;
         const parser = new DOMParser();
@@ -107,6 +114,16 @@ function makeEmptyList(ul) {
     ul.innerHTML = '';
 }
 
-function getVegeTypes() {
+function setVegeTypes() {
     addTypes(sortAlphabetically(vegeProducts));
+    vegeProducts.forEach(product => {
+        makeEmptyList(productsList)
+        const url = `https://api-eko-bazarek.azurewebsites.net/api/products/categories?type=${product.id}`;
+        fetchData(url).then(data => {
+                addProducts((data));
+            })
+            .catch(error => {
+                console.log(error);
+            })
+    })
 };
