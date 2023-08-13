@@ -27,10 +27,10 @@ div > p {
 
 ul {
   list-style-type: none;
-
+ min-height: 500px;
 }
 
-.container-types ul {
+.container-types {
   display: flex;
   flex-direction: column;
 }
