@@ -6,7 +6,7 @@ export const productsList = document.getElementById('products-list');
 export const typeList = document.getElementById('type-list');
 export const toggleCheckbox = document.getElementById('toggleCheckbox');
 
-export const vegeProducts = [{
+export const vegeCategories = [{
     id: 'HONEY',
     name: 'Miody'
 },

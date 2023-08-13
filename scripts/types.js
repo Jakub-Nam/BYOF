@@ -1,19 +1,25 @@
 import {
-    vegeProducts
-} from './shared/const.js';
-import {
     fetchData
 } from './contactDb.js';
 import {
     typesUrl,
-    productsUrl,
-    productsList,
     typeList,
-    toggleCheckbox
+    toggleCheckbox,
+    productsList,
+    vegeCategories
 } from './shared/const.js';
+import {
+    addProducts,
+    setProducts
+} from './products.js';
+import {
+    sortAlphabetically,
+    makeEmptyList,
+    showErrorToast
+} from './shared/functions.js'
+
 
 setTypes();
-setProducts();
 
 typeList.addEventListener('click', (event) => {
 
@@ -37,7 +43,7 @@ typeList.addEventListener('click', (event) => {
                     addProducts(sortedFood);
                 })
                 .catch(error => {
-                    console.log(error);
+                    showErrorToast(error)
                 })
         }
     }
@@ -50,6 +56,8 @@ toggleCheckbox.addEventListener('change', function () {
     } else {
         makeEmptyList(typeList);
         setTypes();
+        makeEmptyList(productsList);
+        setProducts();
     }
 });
 
@@ -60,18 +68,7 @@ function setTypes() {
             addTypes(sortAlphabetically(data));
         })
         .catch(error => {
-            console.log(error);
-        })
-}
-
-function setProducts() {
-    fetchData(productsUrl)
-        .then(data => {
-            makeEmptyList(productsList);
-            addProducts(sortAlphabetically(data));
-        })
-        .catch(error => {
-            console.log(error);
+            showErrorToast(error)
         })
 }
 
@@ -93,37 +90,25 @@ function addTypes(types) {
     });
 }
 
-function addProducts(products) {
-    products.forEach(food => {
-        const liTemplate = `<li><figure><img src="${food.iconUrl}"><figcaption>${food.name}</figcaption></figure></li>`;
-        const parser = new DOMParser();
-        const liElement = parser.parseFromString(liTemplate, 'text/html').body.firstChild;
-        productsList.appendChild(liElement);
-    });
-}
-
-function sortAlphabetically(data) {
-    const collator = new Intl.Collator('pl', {
-        sensitivity: 'base'
-    });
-
-    return data.sort((a, b) => collator.compare(a.name, b.name));
-}
-
-function makeEmptyList(ul) {
-    ul.innerHTML = '';
-}
-
-function setVegeTypes() {
-    addTypes(sortAlphabetically(vegeProducts));
-    vegeProducts.forEach(product => {
+async function setVegeTypes() {
+    addTypes(sortAlphabetically(vegeCategories));
+    let vegeProducts = [];
+    vegeCategories.forEach((product, index) => {
         makeEmptyList(productsList)
         const url = `https://api-eko-bazarek.azurewebsites.net/api/products/categories?type=${product.id}`;
         fetchData(url).then(data => {
-                addProducts((data));
+                addProducts(sortAlphabetically(data));
+                vegeProducts = vegeProducts.concat(data)
             })
             .catch(error => {
-                console.log(error);
+                showErrorToast(error)
+            })
+            .finally(() => {
+                if (index === vegeCategories.length - 1) {
+                    makeEmptyList(productsList);
+                    sortAlphabetically(vegeProducts);
+                    addProducts(vegeProducts);
+                }
             })
     })
 };
